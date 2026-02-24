@@ -74,31 +74,23 @@ function AppRoutes() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="pb-24 pt-6 px-4 max-w-md mx-auto min-h-screen"
-      >
-        <Routes location={location}>
-          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-          <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />} />
-          
-          <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
-          <Route path="/game/:type" element={user ? <GamePage /> : <Navigate to="/login" />} />
-          <Route path="/wallet" element={user ? <WalletPage /> : <Navigate to="/login" />} />
-          <Route path="/history" element={user ? <HistoryPage /> : <Navigate to="/login" />} />
-          <Route path="/referral" element={user ? <ReferralPage /> : <Navigate to="/login" />} />
-          <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
-          <Route path="/chat" element={user ? <ChatPage /> : <Navigate to="/login" />} />
-          
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
+    <div className="pb-24 pt-6 px-4 max-w-md mx-auto min-h-screen">
+      <Routes>
+        <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />} />
+        
+        <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/game/:type" element={user ? <GamePage /> : <Navigate to="/login" />} />
+        <Route path="/wallet" element={user ? <WalletPage /> : <Navigate to="/login" />} />
+        <Route path="/history" element={user ? <HistoryPage /> : <Navigate to="/login" />} />
+        <Route path="/referral" element={user ? <ReferralPage /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="/chat" element={user ? <ChatPage /> : <Navigate to="/login" />} />
+        
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </div>
   );
 }
 
