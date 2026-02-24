@@ -1,0 +1,9 @@
+{
+  "name": "Ludo Joy",
+  "description": "A premium real-money Ludo gaming platform with iOS-style design, featuring classic and popular Ludo games, real-time betting, and a comprehensive admin panel.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
