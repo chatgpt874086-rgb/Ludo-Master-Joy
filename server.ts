@@ -66,25 +66,37 @@ async function startServer() {
   // Auth Routes
   app.post("/api/auth/signup", (req, res) => {
     const { username, mobile, password, referralCode } = req.body;
+    console.log(`Signup attempt: ${mobile}`);
     const userId = Math.floor(10000 + Math.random() * 90000).toString();
     const uid = Math.random().toString(36).substring(7);
     
     try {
       const stmt = db.prepare("INSERT INTO users (uid, username, mobile, password, user_id, referred_by) VALUES (?, ?, ?, ?, ?, ?)");
       stmt.run(uid, username, mobile, password, userId, referralCode || null);
-      res.json({ success: true, user: { uid, username, mobile, user_id: userId } });
+      const user = db.prepare("SELECT * FROM users WHERE uid = ?").get(uid);
+      console.log(`Signup successful: ${mobile}`);
+      res.json({ success: true, user });
     } catch (e) {
+      console.error(`Signup failed: ${mobile}`, e);
       res.status(400).json({ error: "Mobile number already exists" });
     }
   });
 
   app.post("/api/auth/login", (req, res) => {
     const { mobile, password } = req.body;
-    const user = db.prepare("SELECT * FROM users WHERE mobile = ? AND password = ?").get(mobile, password);
-    if (user) {
-      res.json({ success: true, user });
-    } else {
-      res.status(401).json({ error: "Invalid credentials" });
+    console.log(`Login attempt: ${mobile}`);
+    try {
+      const user = db.prepare("SELECT * FROM users WHERE mobile = ? AND password = ?").get(mobile, password);
+      if (user) {
+        console.log(`Login successful: ${mobile}`);
+        res.json({ success: true, user });
+      } else {
+        console.log(`Login failed: Invalid credentials for ${mobile}`);
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+    } catch (e) {
+      console.error(`Login error: ${mobile}`, e);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 

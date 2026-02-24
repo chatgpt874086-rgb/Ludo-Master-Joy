@@ -14,21 +14,27 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Attempting login for:", mobile);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile, password })
       });
+      
       const data = await res.json();
-      if (data.success) {
+      
+      if (res.ok && data.success) {
+        console.log("Login successful, user data:", data.user);
         login(data.user);
         navigate('/');
       } else {
-        alert(data.error);
+        console.error("Login failed:", data.error || "Unknown error");
+        alert(data.error || "Invalid credentials. Please check your mobile and password.");
       }
-    } catch (e) {
-      alert("Login failed");
+    } catch (error) {
+      console.error("Network or server error during login:", error);
+      alert("Login failed. Please check your internet connection or try again later.");
     } finally {
       setLoading(false);
     }

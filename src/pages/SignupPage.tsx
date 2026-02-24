@@ -21,21 +21,27 @@ export default function SignupPage() {
       return;
     }
     setLoading(true);
+    console.log("Attempting signup for:", mobile);
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, mobile, password, referralCode })
       });
+      
       const data = await res.json();
-      if (data.success) {
+      
+      if (res.ok && data.success) {
+        console.log("Signup successful, user data:", data.user);
         login(data.user);
         navigate('/');
       } else {
-        alert(data.error);
+        console.error("Signup failed:", data.error || "Unknown error");
+        alert(data.error || "Signup failed. Mobile number might already be registered.");
       }
-    } catch (e) {
-      alert("Signup failed");
+    } catch (error) {
+      console.error("Network or server error during signup:", error);
+      alert("Signup failed. Please check your internet connection or try again later.");
     } finally {
       setLoading(false);
     }
